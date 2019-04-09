@@ -92,7 +92,8 @@ public class RNMailModule extends ReactContextBaseJavaModule {
       if (attachment.hasKey("path") && !attachment.isNull("path")) {
         String path = attachment.getString("path");
         File file = new File(path);
-        Uri contentUri = FileProvider.getUriForFile(reactContext, "com.moe.pgp.dev.fileprovider", file);
+        String authority = getReactApplicationContext().getPackageName() + ".com.chirag.RNMail.fileprovider";
+        Uri contentUri = FileProvider.getUriForFile(reactContext, authority, file);
 
         i.putExtra(Intent.EXTRA_STREAM, contentUri);
         i.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
