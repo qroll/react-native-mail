@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.support.v4.content.FileProvider;
 import android.text.Html;
 
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -53,8 +54,10 @@ public class RNMailModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void mail(ReadableMap options, Callback callback) {
-    Intent i = new Intent(Intent.ACTION_SENDTO);
-    i.setData(Uri.parse("mailto:"));
+    Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+    emailIntent.setData(Uri.parse("mailto:"));
+
+    Intent i = new Intent(Intent.ACTION_SEND);
 
     if (options.hasKey("subject") && !options.isNull("subject")) {
       i.putExtra(Intent.EXTRA_SUBJECT, options.getString("subject"));
@@ -89,8 +92,11 @@ public class RNMailModule extends ReactContextBaseJavaModule {
       if (attachment.hasKey("path") && !attachment.isNull("path")) {
         String path = attachment.getString("path");
         File file = new File(path);
-        Uri p = Uri.fromFile(file);
-        i.putExtra(Intent.EXTRA_STREAM, p);
+        Uri contentUri = FileProvider.getUriForFile(reactContext, "com.moe.pgp.dev.fileprovider", file);
+
+        i.putExtra(Intent.EXTRA_STREAM, contentUri);
+        i.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        i.setSelector(emailIntent);
       }
     }
 

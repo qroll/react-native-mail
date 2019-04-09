@@ -1,4 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.chirag.RNMail">
-
+    <provider
+        android:name="com.chirag.RNMail.RNMailFileProvider"
+        android:authorities="${applicationId}.fileprovider"
+        android:grantUriPermissions="true"
+        android:exported="false">
+        <meta-data
+            android:name="android.support.FILE_PROVIDER_PATHS"
+            android:resource="@xml/file_paths" />
+    </provider>
 </manifest>
